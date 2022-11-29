@@ -1,4 +1,4 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder, guard};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -6,6 +6,10 @@ async fn main() -> std::io::Result<()> {
         App::new()
         .service(hello)
         .service(echo)
+        .service(
+            web::scope("/")
+            .guard(guard::Header("cross-origin-things", "value"))
+        )
         .route("/hey", web::get().to(manual_hello))
     })
     .bind("localhost:8080")?
